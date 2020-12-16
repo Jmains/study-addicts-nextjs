@@ -7,7 +7,7 @@ export default function Home() {
         <title>Intreecate</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <h1 className="text-blue-400">Hello</h1>
+      <h1 className="text-blue-400">Test</h1>
     </div>
   );
 }
