@@ -1,0 +1,201 @@
+type Account @collection(name: "accounts") {
+  email: String! @unique(index: "unique_accounts_email")
+  user: User! @relation
+}
+
+type User @collection(name: "users") {
+  email: String!
+  displayName: String
+  businessEmail: String
+  firstName: String!
+  lastName: String
+  username: String! @unique(index: "unique_users_username")
+  # Profile Info Fields
+  skills: [String!]!
+  genres: [String!]
+  tag: String # Creator Audience Vendor
+  dob: String
+  city: String
+  state: String
+  gender: String
+  inspiration: String
+  bio: String
+  profilePic: String
+  coverPhoto: String
+  # End Profile Info Fields
+  # collaborators: [Collaborator]! @relation(name: "user_collaborators")
+  collaboratorCount: Int!
+  # followers: [Follower]! @relation(name: "user_followers")
+  followerCount: Int!
+  # following: [Following]! @relation(name: "user_following")
+  followingCount: Int!
+  # posts: [Post]! @relation(name: "user_posts")
+  # tracks: [Track]! @relation(name: "user_tracks")
+  # albums: [Album]! @relation(name: "user_albums")
+  # videos: [Video]! @relation(name: "user_videos")
+  # likes: [Like]! @relation(name: "user_likes")
+  # loves: [Love]! @relation(name: "user_loves")
+  # chats: [Chat]!
+  # pendingCollabs: [PendingCollab]! @relation(name: "user_pendingCollabs")
+}
+
+type Collaborator @collection(name: "collaborators") {
+  author: User!
+  collaborator: User!
+}
+
+type PendingCollab @collection(name: "pendingCollabs") {
+  author: User!
+  pendingCollab: User!
+}
+
+type Follower @collection(name: "followers") {
+  author: User!
+  follower: User!
+}
+
+type Following @collection(name: "following") {
+  author: User!
+  following: User!
+}
+
+type Post @collection(name: "posts") {
+  lookingFor: [String!]! # Artist, Audio Engineer, Comedian, etc...
+  description: String
+  commentCount: Int!
+  author: User!
+  asset: [Asset!]
+  imageUrl: String
+  videoUrl: String
+  audioUrl: String
+}
+
+type Asset @embedded {
+  url: String!
+  type: String!
+}
+
+type Comment @collection(name: "comments") {
+  post: Post!
+  author: User!
+  text: String!
+  # likes: [User]!
+  # likeCount: Int!
+  replyCount: Int!
+}
+
+type Genre @collection(name: "genres") {
+  name: String!
+}
+
+type Skill @collection(name: "skills") {
+  name: String!
+}
+
+type CommentReply @collection(name: "comment_replies") {
+  comment: Comment!
+  author: User!
+  text: String!
+  # likes: [User]!
+  # likeCount: Int!
+}
+
+type Track @collection(name: "tracks") {
+  title: String!
+  author: User!
+  album: Album
+  artistName: String!
+  imageUrl: String
+  duration: Int!
+  audioUrl: String!
+  isPublic: Boolean!
+  genre: String!
+  # love: [Love]! @relation(name: "track_loves")
+  loveCount: Int!
+  # likes: [Like]! @relation(name: "track_likes")
+  likeCount: Int!
+}
+
+type Album @collection(name: "albums") {
+  title: String!
+  author: User!
+  genre: String!
+  coverImageUrl: String
+  # tracks: [Track!]! @relation(name: "album_tracks")
+  totalTracks: Int!
+  isPublic: Boolean!
+  # loves: [Love]! @relation(name: "album_loves")
+  loveCount: Int!
+  # likes: [Like]! @relation(name: "album_likes")
+  likeCount: Int!
+}
+
+type Image @collection(name: "images") {
+  title: String!
+  author: User!
+  description: String!
+  imageUrl: String!
+  # loves: [Love]! @relation(name: "image_loves")
+  loveCount: Int!
+  # likes: [Like]! @relation(name: "image_likes")
+  likeCount: Int!
+  isPublic: Boolean!
+  category: String! #Modeling, Photography, Visual Arts, Painting
+}
+
+type Video @collection(name: "videos") {
+  title: String!
+  description: String
+  author: User!
+  category: String! # Short Films, Music Videos, Skits, Visual Arts
+  videoUrl: String!
+  isPublic: Boolean!
+  # loves: [Love]! @relation(name: "video_loves")
+  loveCount: Int!
+  # likes: [Like]! @relation(name: "video_likes")
+  likeCount: Int!
+}
+
+# type File {
+#   filename: String!
+#   mimetype: String!
+#   encoding: String!
+#   url: String!
+# }
+
+type Like @collection(name: "likes") {
+  author: User!
+  # post: Post
+  # comment: Comment
+  # commentReply: CommentReply
+  track: Track
+  image: Image
+  album: Album
+  video: Video
+}
+
+type Love @collection(name: "loves") {
+  author: User!
+  # post: Post
+  # comment: Comment
+  # commentReply: CommentReply
+  track: Track
+  image: Image
+  album: Album
+  video: Video
+}
+
+type Mutation {
+  login(email: String!, password: String!): String! @resolver
+  register(email: String!, password: String!): Account! @resolver
+}
+
+type Query {
+  allAccountsByEmail(email: String!): Account!
+  allUsers: [User!]
+  allTracks: [Track!]
+  allAlbums: [Album!]
+  allVideos: [Video!]
+  allImages: [Image!]
+  allPosts: [Post!]
+}
