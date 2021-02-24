@@ -45,14 +45,18 @@ const Modal: FC<Props> = ({ children, open, onClose, onEnter = null }) => {
   return (
     <Portal>
       {open ? (
-        <div className="z-50 fixed h-96 flex items-center inset-0 justify-center bg-purple-600 opacity-50">
-          <div className="p-12 border relative focus:outline-none" role="dialog" ref={ref}>
+        <div className="z-50 fixed flex items-center inset-0 justify-center bg-black bg-opacity-60">
+          <div
+            className="p-10 rounded-md relative focus:outline-none bg-gray-50"
+            role="dialog"
+            ref={ref}
+          >
             <button
               onClick={() => onClose()}
               aria-label="Close panel"
               className="absolute right-0 top-0 m-6 hover:text-gray-500 transition ease-in-out duration-150 focus:outline-none "
             >
-              <Cross className="h-6 w-6" />
+              <Cross className="h-6 w-6 fill-current text-black hover:text-lime-600" />
             </button>
             {children}
           </div>

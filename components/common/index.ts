@@ -3,3 +3,4 @@ export { default as Navbar } from "./Navbar";
 export { default as Searchbar } from "./Searchbar";
 export { default as UserNavbar } from "./UserNavbar";
 export { default as PageHeader } from "./PageHeader";
+export { default as FeatureBar } from "./FeatureBar";

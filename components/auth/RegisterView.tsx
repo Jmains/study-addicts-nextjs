@@ -3,6 +3,8 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { FC, useState } from "react";
 import { OpenEye, ClosedEye } from "@components/icons";
+import Image from "next/image";
+import { useUIDispatch } from "@components/ui/context";
 
 interface Props {}
 
@@ -15,9 +17,16 @@ interface RegisterFormInput {
 
 const RegisterView: FC<Props> = () => {
   const router = useRouter();
+  const uiDispatch = useUIDispatch();
+
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const { register, handleSubmit, watch, errors } = useForm<RegisterFormInput>();
   const onSubmit = (data: RegisterFormInput) => {
+    setLoading(true);
+    // Do async task
+    setLoading(false);
     console.log(data);
     router.push("/login");
   };
@@ -32,14 +41,13 @@ const RegisterView: FC<Props> = () => {
   // console.log(watch("password"));
 
   return (
-    <div className="bg-gray-100 min-h-screen flex items-center justify-center">
-      <div className="space-y-8 w-full max-w-sm">
-        <div>
-          <h1 className="font-bold text-3xl text-center">Sign up an account</h1>
-        </div>
-
-        <form className="p-6 bg-white rounded-lg shadow-sm" onSubmit={handleSubmit(onSubmit)}>
-          <div className="text-gray-600 font-medium space-y-6">
+    <div className="flex items-center justify-center">
+      <div className="space-y-8 w-80">
+        <form className="p-2 rounded-lg" onSubmit={handleSubmit(onSubmit)}>
+          <div className="flex justify-center">
+            <Image src="/vercel.svg" height={100} width={100} />
+          </div>
+          <div className="text-gray-600 font-medium space-y-4 mt-3">
             <div>
               <label htmlFor="firstName">
                 First name<span className="text-red-500">*</span>
@@ -82,7 +90,6 @@ const RegisterView: FC<Props> = () => {
                 name="email"
                 type="email"
                 autoComplete="email"
-                required
                 ref={register({ required: true })}
               />
               {errors.email && (
@@ -104,11 +111,13 @@ const RegisterView: FC<Props> = () => {
                 />
                 {showPassword ? (
                   <OpenEye
+                    aria-label="show password"
                     onClick={togglePasswordVisiblity}
                     className="absolute mx-2 top-0 mt-3 right-0 h-5 w-5 cursor-pointer"
                   />
                 ) : (
                   <ClosedEye
+                    aria-label="hide password"
                     onClick={togglePasswordVisiblity}
                     className="absolute mx-2 top-0 mt-3 right-0 h-5 w-5 cursor-pointer"
                   />
@@ -123,15 +132,31 @@ const RegisterView: FC<Props> = () => {
           <button
             className="text-white shadow-md font-medium text-center w-full py-2 mt-10 rounded-md bg-gradient-to-r from-lime-800 to-lime-600 hover:bg-gradient-to-r hover:from-lime-900 hover:to-lime-700 focus:outline-none focus:ring-lime-400 focus:ring-2 transition-all duration-150 ease-out"
             type="submit"
+            disabled={loading}
           >
             Sign up
           </button>
-          <p className="text-sm italic text-gray-500 text-center mt-4">
-            By clicking "Sign up" you are agreeing to our{" "}
+          <span className="text-center block mt-5 text-gray-500 text-sm font-light">
+            Already have an account?{" "}
+            <a
+              className="font-normal text-lime-600 hover:underline cursor-pointer"
+              onClick={() => uiDispatch({ type: "SET_MODAL_VIEW", view: "LOGIN_VIEW" })}
+            >
+              Log In
+            </a>
+          </span>
+
+          <div className="flex justify-center text-gray-400 text-sm font-light mt-10">
             <Link href="/">
-              <a className="text-lime-600 hover:underline">Terms and Conditions</a>
+              <a>&copy; Company &bull;&nbsp; </a>
             </Link>
-          </p>
+            <Link href="/">
+              <a> Privacy & Terms &bull;&nbsp; </a>
+            </Link>
+            <Link href="/">
+              <a> Contact</a>
+            </Link>
+          </div>
         </form>
       </div>
     </div>

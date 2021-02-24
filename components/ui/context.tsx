@@ -52,6 +52,13 @@ type MODAL_VIEWS =
   | "FORGOT_PASS_VIEW"
   | "CREATE_STUDY_GROUP_VIEW";
 
+export const modalViews = {
+  REGISTER_VIEW: "REGISTER_VIEW",
+  LOGIN_VIEW: "LOGIN_VIEW",
+  FORGOT_PASS_VIEW: "FORGOT_PASS_VIEW",
+  CREATE_STUDY_GROUP_VIEW: "CREATE_STUDY_GROUP_VIEW",
+};
+
 type ToastText = string;
 
 const UIStateContext = createContext<State | undefined>(initialState);
