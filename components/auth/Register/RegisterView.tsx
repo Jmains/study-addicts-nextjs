@@ -1,10 +1,11 @@
 import { useForm } from "react-hook-form";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { FC, useState } from "react";
-import { OpenEye, ClosedEye } from "@components/icons";
+import { OpenEye, ClosedEye, LoadingSpinner } from "@components/icons";
 import Image from "next/image";
 import { useUIDispatch } from "@components/ui/context";
+import { auth, db } from "config/firebase";
+import { useAuth } from "@utils/hooks/useAuth";
 
 interface Props {}
 
@@ -16,40 +17,42 @@ interface RegisterFormInput {
 }
 
 const RegisterView: FC<Props> = () => {
-  const router = useRouter();
+  const auth = useAuth();
   const uiDispatch = useUIDispatch();
 
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const { register, handleSubmit, watch, errors } = useForm<RegisterFormInput>();
-  const onSubmit = (data: RegisterFormInput) => {
+  const onSubmit = async (formData: RegisterFormInput) => {
+    const { firstName, lastName, email, password } = formData;
     setLoading(true);
-    // Do async task
+    try {
+      const user = await auth.register(firstName, lastName, email, password);
+      uiDispatch({ type: "SET_TOAST_TEXT", text: "Account registered! Please sign in..." });
+      uiDispatch({ type: "OPEN_TOAST" });
+      uiDispatch({ type: "SET_MODAL_VIEW", view: "LOGIN_VIEW" });
+    } catch (err) {
+      setError(err.message);
+    }
     setLoading(false);
-    console.log(data);
-    router.push("/login");
   };
 
   const togglePasswordVisiblity = () => {
     setShowPassword(showPassword ? false : true);
   };
 
-  // console.log(watch("firstName"));
-  // console.log(watch("lastName"));
-  // console.log(watch("email"));
-  // console.log(watch("password"));
-
   return (
     <div className="flex items-center justify-center">
       <div className="space-y-8 w-80">
         <form className="p-2 rounded-lg" onSubmit={handleSubmit(onSubmit)}>
           <div className="flex justify-center">
-            <Image src="/vercel.svg" height={100} width={100} />
+            <h1 className="text-gray-800 text-2xl font-semibold">Study Addicts</h1>
           </div>
-          <div className="text-gray-600 font-medium space-y-4 mt-3">
+          <div className="text-gray-600 font-medium space-y-4 mt-12">
             <div>
-              <label htmlFor="firstName">
+              <label className="text-gray-600" htmlFor="firstName">
                 First name<span className="text-red-500">*</span>
               </label>
               <input
@@ -126,15 +129,17 @@ const RegisterView: FC<Props> = () => {
               {errors.password && (
                 <span className="italic text-red-500 text-sm">password is required</span>
               )}
+              {error && <span className="italic text-red-500 text-sm">{error}</span>}
             </div>
           </div>
 
           <button
-            className="text-white shadow-md font-medium text-center w-full py-2 mt-10 rounded-md bg-gradient-to-r from-lime-800 to-lime-600 hover:bg-gradient-to-r hover:from-lime-900 hover:to-lime-700 focus:outline-none focus:ring-lime-400 focus:ring-2 transition-all duration-150 ease-out"
+            className="flex justify-center items-center text-white shadow-md font-medium text-center w-full py-2 mt-10 rounded-md bg-gradient-to-r from-lime-800 to-lime-600 hover:bg-gradient-to-r hover:from-lime-900 hover:to-lime-700 focus:outline-none focus:ring-lime-400 focus:ring-2 transition-all duration-150 ease-out"
             type="submit"
             disabled={loading}
           >
-            Sign up
+            {loading && <LoadingSpinner className="h-6 w-6 mr-2" />}
+            {loading ? "Signing up..." : "Sign Up"}
           </button>
           <span className="text-center block mt-5 text-gray-500 text-sm font-light">
             Already have an account?{" "}

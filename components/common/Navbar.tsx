@@ -3,9 +3,11 @@ import throttle from "lodash.throttle";
 import cn from "classnames";
 import { AcademicCap } from "@components/icons";
 import { useUIDispatch } from "@components/ui/context";
+import { useAuth } from "@utils/hooks/useAuth";
 
 const Navbar: FC = () => {
   const uiDispatch = useUIDispatch();
+  const { logout } = useAuth();
   const [hasScrolled, setHasScrolled] = useState(false);
 
   // Detect whether user has scrolled down
@@ -57,6 +59,10 @@ const Navbar: FC = () => {
                 >
                   Login
                 </a>
+
+                <button className="text-gray-300 text-sm font-md" onClick={logout}>
+                  Sign Out
+                </button>
 
                 <a
                   onClick={() => {

@@ -7,10 +7,11 @@ import { LoginView, RegisterView, ForgotPassView } from "@components/auth";
 import { modalViews } from "@components/ui/context";
 import PageHeader from "./PageHeader";
 import Footer from "./Footer";
+import FeatureBar from "./FeatureBar";
 
 const Layout: FC = ({ children }) => {
   const uiDispatch = useUIDispatch();
-  const { displayModal, modalView } = useUIState();
+  const { displayModal, modalView, displayToast, toastText } = useUIState();
 
   const closeModal = () => {
     uiDispatch({ type: "CLOSE_MODAL" });
@@ -18,11 +19,13 @@ const Layout: FC = ({ children }) => {
 
   return (
     <div
-      className={cn("h-full bg-white mx-auto transition-colors duration-150 max-w-screen-7xl")}
+      className={cn(
+        "h-full bg-white mx-auto transition-colors duration-150 max-w-screen-7xl font-sans"
+      )}
     >
       <Navbar />
       <PageHeader />
-      <main className="antialiased overflow-hidden">{children}</main>
+      <main className="antialiased overflow-hidden ">{children}</main>
       {/* <Footer pages={pageProps.pages} /> */}
 
       {/* <Sidebar open={displaySidebar} onClose={closeSidebar}>
@@ -36,15 +39,27 @@ const Layout: FC = ({ children }) => {
         {/* {modalView === modalViews.CREATE_STUDY_GROUP_VIEW && <CreateStudyGroupView} */}
       </Modal>
 
-      {/* <FeatureBar
-    title="This site uses cookies to improve your experience. By clicking, you agree to our Privacy Policy."
-    hide={acceptedCookies}
-    action={
-      <Button className="mx-5" onClick={() => onAcceptCookies()}>
-        Accept cookies
-      </Button>
-    }
-  /> */}
+      <FeatureBar
+        hide={!displayToast}
+        title={toastText}
+        description=""
+        action={
+          <button
+            onClick={() => {
+              uiDispatch({ type: "CLOSE_TOAST" });
+            }}
+            className="px-2 py-1 bg-white rounded-full"
+          >
+            X
+          </button>
+        }
+        // hide={acceptedCookies}
+        // action={
+        //   <Button className="mx-5" onClick={() => onAcceptCookies()}>
+        //     Accept cookies
+        //   </Button>
+        // }
+      />
       <Footer />
     </div>
   );

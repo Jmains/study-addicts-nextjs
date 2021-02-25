@@ -2,6 +2,8 @@ import { useForm } from "react-hook-form";
 import { FC, useState } from "react";
 import { useUIDispatch, useUIState } from "@components/ui/context";
 import Image from "next/image";
+import { useAuth } from "@utils/hooks/useAuth";
+import { LoadingSpinner } from "@components/icons";
 
 interface Props {}
 
@@ -11,22 +13,35 @@ interface ForgotPassFormInput {
 
 const ForgotPassView: FC<Props> = () => {
   const uiDispatch = useUIDispatch();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const { sendPasswordResetEmail } = useAuth();
   const { register, handleSubmit, watch, errors } = useForm<ForgotPassFormInput>();
-  const onSubmit = (data: ForgotPassFormInput) => console.log(data);
-
-  // console.log(watch("firstName"));
-  // console.log(watch("lastName"));
-  // console.log(watch("email"));
-  // console.log(watch("password"));
+  const onSubmit = async (formData: ForgotPassFormInput) => {
+    setLoading(true);
+    try {
+      await sendPasswordResetEmail(formData.email);
+      uiDispatch({ type: "CLOSE_MODAL" });
+      uiDispatch({
+        type: "SET_TOAST_TEXT",
+        text: "A password reset link has successfully been sent to your email.",
+      });
+      uiDispatch({ type: "OPEN_TOAST" });
+      // Reset pass email sent toast message
+    } catch (err) {
+      setError(err.message);
+    }
+    setLoading(false);
+  };
 
   return (
     <div className="flex items-center justify-center">
       <div className="space-y-8 w-80">
         <form className="p-3 rounded-lg" onSubmit={handleSubmit(onSubmit)}>
           <div className="flex justify-center">
-            <Image src="/vercel.svg" height={100} width={100} />
+            <h1 className="text-gray-800 text-2xl font-semibold">Study Addicts!</h1>
           </div>
-          <div className="text-gray-600 font-medium mt-2">
+          <div className="text-gray-600 font-medium mt-8">
             <div className="">
               <label className="text-gray-600" htmlFor="email">
                 Email address<span className="text-red-500">*</span>
@@ -44,14 +59,16 @@ const ForgotPassView: FC<Props> = () => {
                   email is required
                 </span>
               )}
+              {error && <span className="italic text-red-500 text-sm">{error}</span>}
             </div>
           </div>
 
           <button
-            className="text-white font-medium text-center w-full py-2 mt-7 rounded-md bg-gradient-to-r from-lime-800 to-lime-600 hover:bg-gradient-to-r hover:from-lime-900 hover:to-lime-700 focus:outline-none focus:ring-2 transition duration-300 ease-out"
+            className="items-center justify-center flex text-white font-medium text-center w-full py-2 mt-7 rounded-md bg-gradient-to-r from-lime-800 to-lime-600 hover:bg-gradient-to-r hover:from-lime-900 hover:to-lime-700 focus:outline-none focus:ring-2 transition duration-300 ease-out"
             type="submit"
           >
-            Recover Password
+            {loading && <LoadingSpinner className="h-6 w-6 mr-2" />}
+            {loading ? "Sending reset link..." : "Recover Password"}
           </button>
           <p className="text-gray-500 text-center text-sm mt-4">
             Already have an account?{" "}

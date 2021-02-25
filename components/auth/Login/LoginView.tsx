@@ -1,10 +1,11 @@
 import { useForm } from "react-hook-form";
 import Link from "next/link";
 import { FC, useState } from "react";
-import { AcademicCap, ClosedEye, OpenEye } from "@components/icons";
+import { AcademicCap, ClosedEye, LoadingSpinner, OpenEye } from "@components/icons";
 import { useUIDispatch, useUIState } from "@components/ui/context";
 import Image from "next/image";
 import Logo from "@components/ui/Logo";
+import { useAuth } from "@utils/hooks/useAuth";
 
 interface Props {}
 
@@ -14,37 +15,43 @@ interface LoginFormInput {
 }
 
 const LoginView: FC<Props> = () => {
+  const auth = useAuth();
   const uiDispatch = useUIDispatch();
 
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const { register, handleSubmit, watch, errors } = useForm<LoginFormInput>();
-  const onSubmit = (data: LoginFormInput) => {
-    console.log(data);
-    setLoading(true);
-    // Do async task
-    setLoading(false);
-  };
 
   const togglePasswordVisiblity = () => {
     setShowPassword(showPassword ? false : true);
   };
 
-  // console.log(watch("firstName"));
-  // console.log(watch("lastName"));
-  // console.log(watch("email"));
-  // console.log(watch("password"));
+  const onSubmit = async (formData: LoginFormInput) => {
+    const { email, password } = formData;
+    setLoading(true);
+
+    try {
+      await auth.login(email, password);
+      uiDispatch({ type: "CLOSE_MODAL" });
+      uiDispatch({ type: "SET_TOAST_TEXT", text: "Successfully logged in!" });
+      uiDispatch({ type: "OPEN_TOAST" });
+    } catch (err) {
+      setError(err.message);
+    }
+
+    setLoading(false);
+  };
 
   return (
     <div className="flex items-center justify-center">
       <div className="space-y-8 w-80">
         <form className="p-2 rounded-lg" onSubmit={handleSubmit(onSubmit)}>
           <div className="flex justify-center">
-            {/* <Logo className="h-10 w-10"/> */}
-            <Image src="/vercel.svg" height={100} width={100} />
+            <h1 className="text-gray-800 text-2xl font-semibold">Study Addicts</h1>
           </div>
-          <div className="text-gray-600 font-medium space-y-4 mt-3">
+          <div className="text-gray-600 font-medium space-y-4 mt-12">
             <div className="">
               <label className="text-gray-600" htmlFor="email">
                 Email address<span className="text-red-500">*</span>
@@ -96,6 +103,7 @@ const LoginView: FC<Props> = () => {
               {errors.password && (
                 <span className="italic text-red-500 text-sm mt-2">password is required</span>
               )}
+              {error && <span className="italic text-red-500 text-sm mt-2">{error}</span>}
             </div>
           </div>
 
@@ -107,13 +115,16 @@ const LoginView: FC<Props> = () => {
               Forgot your password?
             </a>
           </div>
+
           <button
-            className="text-white font-medium text-center w-full py-2 mt-8 rounded-md bg-gradient-to-r from-lime-800 to-lime-600 hover:bg-gradient-to-r hover:from-lime-900 hover:to-lime-700 focus:outline-none focus:ring-2 transition duration-300 ease-out"
+            className="flex items-center justify-center text-white font-medium text-center w-full py-2 mt-8 rounded-md bg-gradient-to-r from-lime-800 to-lime-600 hover:bg-gradient-to-r hover:from-lime-900 hover:to-lime-700 focus:outline-none focus:ring-2 transition duration-300 ease-out"
             type="submit"
             disabled={loading}
           >
-            Sign in
+            {loading && <LoadingSpinner className="h-6 w-6 mr-2" />}
+            {loading ? "Signing in..." : "Sign In"}
           </button>
+
           <p className="text-gray-500 text-center text-sm mt-5 font-light">
             Don't have an account? {/* <Link href="/register"> */}
             <a
