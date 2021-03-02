@@ -1,19 +1,21 @@
-import { query as q } from "faunadb";
-import { authClient } from "../../utils/fauna-client";
-import { getAuthCookie } from "../../utils/auth-cookies";
+import prisma from "@lib/prisma";
+import { Prisma } from "@prisma/client";
+import { NextApiRequest, NextApiResponse } from "next";
 
-export default async function user(req, res) {
-  const token = getAuthCookie(req);
+export default async function user(req: NextApiRequest, res: NextApiResponse) {
+  const { uid } = req.body;
+  console.log("uid: ", uid);
 
-  if (!token) {
-    return res.status(401).send("Auth cookie not found");
+  if (!uid) {
+    return res.status(401).send("uid not found");
   }
 
   try {
-    const { ref, data } = await authClient(token).query(q.Get(q.Identity()));
-    res.status(200).json({ ...data, id: ref.id });
+    const user = await prisma.user.findUnique({ where: { id: uid } });
+    console.log("api user: ", user);
+    return res.status(200).send(user);
   } catch (error) {
     console.error(error);
-    res.status(error.requestResult.statusCode).send(error.message);
+    return res.status(error.requestResult.statusCode).send(error.message);
   }
 }

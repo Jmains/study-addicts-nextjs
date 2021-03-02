@@ -3,6 +3,7 @@ import { FC } from "react";
 
 const Restrict: FC = () => {
   useRequireAuth();
+
   return (
     <div>
       <h1>Iam restricted</h1>
