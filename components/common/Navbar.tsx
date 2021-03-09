@@ -4,10 +4,11 @@ import cn from "classnames";
 import { AcademicCap } from "@components/icons";
 import { useUIDispatch } from "@components/ui/context";
 import { useAuth } from "@utils/hooks/useAuth";
+import Link from "next/link";
 
 const Navbar: FC = () => {
   const uiDispatch = useUIDispatch();
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const [hasScrolled, setHasScrolled] = useState(false);
 
   // Detect whether user has scrolled down
@@ -25,7 +26,7 @@ const Navbar: FC = () => {
     };
   }, []);
 
-  return (
+  const unAuthUserNavbar = (
     <nav
       className={cn(
         "bg-trueGray-900 sticky top-0 z-40 transition-all duration-300 ease-in-out",
@@ -44,61 +45,45 @@ const Navbar: FC = () => {
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">
                 {/* Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white"  */}
-                <a
-                  href=""
-                  className=" text-white hover:bg-lime-500 hover:bg-opacity-20 px-3 py-2 rounded-md text-sm font-medium"
-                >
-                  Study Sessions
-                </a>
+                <Link href="/">
+                  <a className=" text-white hover:bg-lime-500 hover:bg-opacity-20 px-3 py-2 rounded-md text-sm font-medium">
+                    Study Sessions
+                  </a>
+                </Link>
 
+                {user && (
+                  <button className="text-gray-300 text-sm font-md" onClick={logout}>
+                    Sign Out
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="hidden md:block">
+            <div className="ml-4 flex items-center md:ml-6">
+              {/* Profile dropdown  */}
+              {!user && (
                 <a
                   onClick={() => {
+                    uiDispatch({ type: "SET_MODAL_VIEW", view: "LOGIN_VIEW" });
                     uiDispatch({ type: "OPEN_MODAL" });
                   }}
                   className="text-gray-300 hover:bg-lime-500 hover:bg-opacity-20 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >
                   Login
                 </a>
-
-                <button className="text-gray-300 text-sm font-md" onClick={logout}>
-                  Sign Out
-                </button>
-
+              )}
+              {!user && (
                 <a
                   onClick={() => {
-                    // setModalView("REGISTER_VIEW");
-                    // openModal();
+                    uiDispatch({ type: "SET_MODAL_VIEW", view: "REGISTER_VIEW" });
+                    uiDispatch({ type: "OPEN_MODAL" });
                   }}
                   className="text-gray-300 hover:bg-lime-500 hover:bg-opacity-20 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >
                   Sign Up
                 </a>
-              </div>
-            </div>
-          </div>
-          <div className="hidden md:block">
-            <div className="ml-4 flex items-center md:ml-6">
-              <button className="bg-gray-800 p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
-                <span className="sr-only">View notifications</span>
-                {/* Heroicon name: bell */}
-                <svg
-                  className="h-6 w-6"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-                  />
-                </svg>
-              </button>
-
-              {/* Profile dropdown  */}
+              )}
               <div className="ml-3 relative">
                 <div>
                   <button
@@ -297,18 +282,13 @@ const Navbar: FC = () => {
             >
               Settings
             </a>
-
-            <a
-              href="#"
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700"
-            >
-              Sign out
-            </a>
           </div>
         </div>
       </div>
     </nav>
   );
+
+  return unAuthUserNavbar;
 };
 
 export default Navbar;

@@ -1,44 +1,86 @@
 import { useState, useEffect, useContext, createContext, ReactNode, useMemo } from "react";
-import { auth, db } from "../../config/firebase";
+import { auth } from "@lib/initFirebase";
 import firebase from "firebase/app";
+import { fetchWithPost } from "@utils/apiHelpers";
+import { getUserFromCookie, removeUserCookie, setUserCookie } from "@utils/userCookies";
 
 const AuthContext = createContext<any | undefined>(undefined);
 type AuthProviderProps = { children: ReactNode };
 
+export interface User {
+  id: string;
+  token: string;
+  firstName: string;
+  lastName?: string;
+  email: string;
+  profilePic?: string;
+}
+
 const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
-  const [user, setUser] = useState<any | null>(null);
+  const [user, setUser] = useState<User | firebase.User | null>(null);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      console.log("User from unsubscribe user useEffect: ", user);
-      setUser(user);
-      // if (user) {
-      //   getUserAdditionalData(user);
-      // }
+    // Firebase updates the id token every hour, this
+    // makes sure the react state and the cookie are
+    // both kept up to date
+    const unsubAuthListener = auth.onIdTokenChanged(async (user) => {
+      console.log("%c Firing onIdTokenChanged", "color: #29d629; background: #222");
+      if (user) {
+        try {
+          const token = await user.getIdToken(); // pass true to force refresh token
+          const { firstName, lastName, email, profilePic, id } = await fetchUserFromDb(
+            user.uid
+          );
+          setUser({ firstName, lastName, email, profilePic, id, token });
+          setUserCookie({ firstName, lastName, email, profilePic, id, token });
+        } catch (err) {
+          console.error(err);
+        }
+      } else {
+        removeUserCookie();
+        setUser(null);
+      }
     });
-    return () => unsubscribe();
-  }, []);
 
-  // Update state while application is in use
-  useEffect(() => {
-    if (user?.uid) {
-      // Subscribe to user document on mount
-      const unsubscribe = db
-        .collection("users")
-        .doc(user.uid)
-        .onSnapshot((doc) => setUser(doc.data()));
-      return () => unsubscribe();
+    const userFromCookie = getUserFromCookie();
+    if (!userFromCookie) {
+      return;
     }
+    setUser(userFromCookie);
+
+    return () => unsubAuthListener();
   }, []);
 
-  const createUser = async (user: any) => {
+  const fetchUserFromDb = async (uid: string) => {
     try {
-      await db.collection("users").doc(user.uid).set(user);
-      console.log("User succesfully added to db");
+      return await fetchWithPost("/api/user", { uid });
     } catch (err) {
       throw {
         ok: false,
-        message: "Failed to create user in FirestoreDB",
+        message: "Failed to fetch user from DB!",
+        details: err,
+      };
+    }
+  };
+
+  const createUser = async (
+    uid: string | undefined,
+    email: string,
+    firstName: string,
+    lastName: string
+  ) => {
+    try {
+      const userData = await fetchWithPost("/api/register", {
+        uid,
+        email,
+        firstName,
+        lastName,
+      });
+      console.log("User succesfully added to db: ", userData);
+    } catch (err) {
+      throw {
+        ok: false,
+        message: "Failed to create user in Postgres",
         details: err,
       };
     }
@@ -56,7 +98,7 @@ const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
         password
       );
       await auth.currentUser?.sendEmailVerification();
-      // await createUser({ uid: userCredential?.user?.uid, email, firstName, lastName });
+      await createUser(userCredential?.user?.uid, email, firstName, lastName);
     } catch (err) {
       console.log(err);
       throw {
@@ -74,30 +116,10 @@ const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
         password
       );
       setUser(userCredential?.user);
-      // await getUserAdditionalData(user);
-      return userCredential?.user;
     } catch (err) {
       throw {
         ok: false,
         message: "Invalid email or password. Please try again.",
-        details: err,
-      };
-    }
-  };
-
-  const getUserAdditionalData = async (user: firebase.User) => {
-    try {
-      const userSnapshot: firebase.firestore.DocumentSnapshot = await db
-        .collection("users")
-        .doc(user.uid)
-        .get();
-      if (userSnapshot.data()) {
-        setUser(userSnapshot.data());
-      }
-    } catch (err) {
-      throw {
-        ok: false,
-        message: "Failed to get additional user data",
         details: err,
       };
     }
@@ -108,11 +130,7 @@ const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
       await auth.signOut();
       setUser(null);
     } catch (err) {
-      throw {
-        ok: false,
-        message: "Failed to sign out",
-        details: err,
-      };
+      console.error(err);
     }
   };
 
@@ -135,7 +153,6 @@ const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
       logout,
       register,
       sendPasswordResetEmail,
-      getUserAdditionalData,
     }),
     [user]
   );

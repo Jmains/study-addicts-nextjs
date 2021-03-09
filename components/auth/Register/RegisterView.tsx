@@ -4,7 +4,6 @@ import { FC, useState } from "react";
 import { OpenEye, ClosedEye, LoadingSpinner } from "@components/icons";
 import Image from "next/image";
 import { useUIDispatch } from "@components/ui/context";
-import { auth, db } from "config/firebase";
 import { useAuth } from "@utils/hooks/useAuth";
 
 interface Props {}
@@ -30,6 +29,7 @@ const RegisterView: FC<Props> = () => {
     setLoading(true);
     try {
       const user = await auth.register(firstName, lastName, email, password);
+      console.log("user: ", user);
       uiDispatch({ type: "SET_TOAST_TEXT", text: "Account registered! Please sign in..." });
       uiDispatch({ type: "OPEN_TOAST" });
       uiDispatch({ type: "SET_MODAL_VIEW", view: "LOGIN_VIEW" });
@@ -56,7 +56,7 @@ const RegisterView: FC<Props> = () => {
                 First name<span className="text-red-500">*</span>
               </label>
               <input
-                className="block focus:shadow-md w-full pl-3 border rounded-md border-gray-300 h-10 mt-1 focus:ring-1 focus:ring-lime-400 outline-none transition duration-200 ease-out"
+                className="block font-light focus:shadow-md w-full pl-3 border rounded-md border-gray-300 h-10 mt-1 focus:ring-1 focus:ring-lime-400 outline-none transition duration-200 ease-out"
                 name="firstName"
                 ref={register({
                   required: true,
@@ -77,7 +77,7 @@ const RegisterView: FC<Props> = () => {
                 Last name
               </label>
               <input
-                className="block pl-3 border w-full focus:shadow-md rounded-md border-gray-300 h-10 mt-1 focus:ring-1 focus:ring-lime-400 outline-none transition duration-200 ease-out"
+                className="block font-light pl-3 border w-full focus:shadow-md rounded-md border-gray-300 h-10 mt-1 focus:ring-1 focus:ring-lime-400 outline-none transition duration-200 ease-out"
                 name="lastName"
                 ref={register({ pattern: /^[A-Za-z]+$/i, maxLength: 20 })}
               />
@@ -89,7 +89,7 @@ const RegisterView: FC<Props> = () => {
               </label>
 
               <input
-                className="block pl-3 border w-full focus:shadow-md rounded-md border-gray-300 h-10 mt-1 focus:ring-1 focus:ring-lime-400 outline-none transition duration-200 ease-out"
+                className="block font-light pl-3 border w-full focus:shadow-md rounded-md border-gray-300 h-10 mt-1 focus:ring-1 focus:ring-lime-400 outline-none transition duration-200 ease-out"
                 name="email"
                 type="email"
                 autoComplete="email"
@@ -106,7 +106,7 @@ const RegisterView: FC<Props> = () => {
               </label>
               <div className="relative">
                 <input
-                  className="block pl-3 focus:shadow-md border w-full rounded-md border-gray-300 h-10 mt-1 focus:ring-1 focus:ring-lime-400 outline-none transition duration-200 ease-out"
+                  className="block font-light pl-3 focus:shadow-md border w-full rounded-md border-gray-300 h-10 mt-1 focus:ring-1 focus:ring-lime-400 outline-none transition duration-200 ease-out"
                   name="password"
                   type={showPassword ? "text" : "password"}
                   autoComplete="current-password"

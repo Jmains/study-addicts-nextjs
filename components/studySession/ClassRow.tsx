@@ -1,33 +1,26 @@
 import { FC } from "react";
 
-interface Props {
-  studySesh: {
-    department: string;
-    classNumber: number;
-    professorName: string;
-    host: {
-      name: string;
-      email: string;
-    };
-    currentCapacity: number;
-    maxCapacity: number;
-    startTime: string;
-    endTime: string;
-    location: {
-      building: string;
-      roomNum: string;
-    };
-  };
+export interface StudySessionProps {
+  id: string;
+  department: string;
+  classNum: number;
+  professor: string;
+  currentCapacity: number;
+  maxCapacity: number;
+  sessionStart: string;
+  sessionEnd: string;
+  building: string;
+  roomNum: string;
 }
 
-const ClassRow: FC<Props> = ({ studySesh }) => {
+const ClassRow: FC<{ studySesh: StudySessionProps }> = ({ studySesh }) => {
   return (
     <tr>
       <td className="px-6 py-4 whitespace-nowrap">
         <div className="flex items-center">
           <div>
-            <div className="text-sm font-medium text-gray-900">{`${studySesh.department} ${studySesh.classNumber}`}</div>
-            <div className="text-sm text-gray-500">{studySesh.professorName}</div>
+            <div className="text-sm font-medium text-gray-900">{`${studySesh.department} ${studySesh.classNum}`}</div>
+            <div className="text-sm text-gray-500">{studySesh.professor}</div>
           </div>
         </div>
       </td>
@@ -41,8 +34,8 @@ const ClassRow: FC<Props> = ({ studySesh }) => {
             />
           </div>
           <div className="ml-4">
-            <div className="text-sm font-medium text-gray-900">{studySesh.host.email}</div>
-            <div className="text-sm text-gray-500">{studySesh.host.name}</div>
+            <div className="text-sm font-medium text-gray-900">{"Neece@gmail.com"}</div>
+            <div className="text-sm text-gray-500">{"Test Name"}</div>
           </div>
         </div>
       </td>
@@ -51,9 +44,9 @@ const ClassRow: FC<Props> = ({ studySesh }) => {
           {`${studySesh.currentCapacity} / ${studySesh.maxCapacity}`}
         </span>
       </td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{`${studySesh.startTime} - ${studySesh.endTime}`}</td>
+      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{`${studySesh.sessionStart} - ${studySesh.sessionEnd}`}</td>
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-        {`${studySesh.location.building} ${studySesh.location.roomNum}`}
+        {`${studySesh.building} ${studySesh.roomNum}`}
       </td>
       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
         <a href="#" className="text-lime-600 hover:text-lime-800">

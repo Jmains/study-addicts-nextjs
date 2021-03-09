@@ -1,5 +1,5 @@
-import { fetchPostJSON } from "@utils/api-helpers";
-import getStripe from "@utils/get-stripejs";
+import { fetchPostJSON } from "@utils/apiHelpers";
+import getStripe from "@utils/getStripejs";
 import Stripe from "stripe";
 import { FC, FormEvent, useState } from "react";
 

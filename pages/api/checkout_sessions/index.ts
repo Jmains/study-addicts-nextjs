@@ -1,4 +1,4 @@
-import { formatAmountForStripe } from "@utils/stripe-helpers";
+import { formatAmountForStripe } from "@utils/stripeHelpers";
 import { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {

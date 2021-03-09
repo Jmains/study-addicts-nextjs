@@ -26,16 +26,21 @@ type Action =
   | {
       type: "SET_MODAL_VIEW";
       view: MODAL_VIEWS;
+    }
+  | {
+      type: "SET_USER_AVATAR";
+      value: string;
     };
 
 type Dispatch = (action: Action) => void;
-type State = {
+interface State {
   displayModal: boolean;
   displayDropdown: boolean;
   displayToast: boolean;
   modalView: string;
   toastText: string;
-};
+  userAvatar: string;
+}
 type UIProviderProps = { children: React.ReactNode };
 
 const initialState = {
@@ -44,6 +49,7 @@ const initialState = {
   displayDropdown: false,
   modalView: "LOGIN_VIEW",
   toastText: "",
+  userAvatar: "",
 };
 
 type MODAL_VIEWS =
@@ -114,6 +120,12 @@ function uiReducer(state: State, action: Action) {
       return {
         ...state,
         toastText: action.text,
+      };
+    }
+    case "SET_USER_AVATAR": {
+      return {
+        ...state,
+        userAvatar: action.value,
       };
     }
   }
