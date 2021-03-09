@@ -19,8 +19,7 @@
       "@components/*": ["components/*"],
       "@assets/*": ["assets/*"],
       "@utils/*": ["utils/*"],
-      "@config/*": ["config/*"],
-      "@lib/*": ["lib/*"]
+      "@config/*": ["config/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.js"],

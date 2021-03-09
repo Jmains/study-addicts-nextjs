@@ -1,104 +1,7 @@
 import { FC } from "react";
-import { GetStaticProps } from "next";
-import ClassRow, { StudySessionProps } from "./ClassRow";
+import ClassRow from "./ClassRow";
 
-export const getStaticProps: GetStaticProps = async () => {
-  const studySessions = [
-    {
-      department: "CS",
-      classNumber: 4305,
-      professorName: "Gopal Goopers",
-      host: {
-        name: "Neece Kebabs",
-        email: "neece.kebabs@utdallas.edu",
-      },
-      currentCapacity: 6,
-      maxCapacity: 10,
-      startTime: "11:30am",
-      endTime: "12:30pm",
-      location: {
-        building: "ECSS",
-        roomNum: "6.696",
-      },
-    },
-    {
-      department: "CS",
-      classNumber: 2336,
-      professorName: "Nut Nguyen",
-      host: {
-        name: "Neece Kebabs",
-        email: "neece.kebabs@utdallas.edu",
-      },
-      currentCapacity: 3,
-      maxCapacity: 8,
-      startTime: "8:30pm",
-      endTime: "9:30pm",
-      location: {
-        building: "ECSN",
-        roomNum: "6.696",
-      },
-    },
-    {
-      department: "CS",
-      classNumber: 1337,
-      professorName: "Nisarg Desai",
-      host: {
-        name: "Neece Kebabs",
-        email: "neece.kebabs@utdallas.edu",
-      },
-      currentCapacity: 3,
-      maxCapacity: 8,
-      startTime: "8:30pm",
-      endTime: "9:30pm",
-      location: {
-        building: "ECSN",
-        roomNum: "6.696",
-      },
-    },
-    {
-      department: "CS",
-      classNumber: 1336,
-      professorName: "John Cole",
-      host: {
-        name: "Neece Kebabs",
-        email: "neece.kebabs@utdallas.edu",
-      },
-      currentCapacity: 0,
-      maxCapacity: 8,
-      startTime: "3:30pm",
-      endTime: "4:30pm",
-      location: {
-        building: "ECSW",
-        roomNum: "6.696",
-      },
-    },
-    {
-      department: "CS",
-      classNumber: 3305,
-      professorName: "Big Brain Wilson",
-      host: {
-        name: "Neece Kebabs",
-        email: "neece.kebabs@utdallas.edu",
-      },
-      currentCapacity: 7,
-      maxCapacity: 8,
-      startTime: "1:30pm",
-      endTime: "2:30pm",
-      location: {
-        building: "ECSS",
-        roomNum: "6.696",
-      },
-    },
-  ];
-
-  return { props: { studySessions } };
-};
-
-type Props = {
-  studySessions?: StudySessionProps[];
-};
-
-const ClassList: FC<Props> = (props) => {
+const ClassList: FC = () => {
   return (
     <div className="flex flex-col">
       <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -143,9 +46,9 @@ const ClassList: FC<Props> = (props) => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {props.studySessions &&
-                  props.studySessions.map((ss, i) => {
-                    return <ClassRow key={i} studySesh={ss} />;
+                {studySessions &&
+                  studySessions.map((ss, idx) => {
+                    return <ClassRow key={idx} studySesh={ss} />;
                   })}
               </tbody>
             </table>
@@ -157,3 +60,91 @@ const ClassList: FC<Props> = (props) => {
 };
 
 export default ClassList;
+
+const studySessions = [
+  {
+    department: "CS",
+    classNumber: 4305,
+    professorName: "Gopal Goopers",
+    host: {
+      name: "Neece Kebabs",
+      email: "neece.kebabs@utdallas.edu",
+    },
+    currentCapacity: 6,
+    maxCapacity: 10,
+    startTime: "11:30am",
+    endTime: "12:30pm",
+    location: {
+      building: "ECSS",
+      roomNum: "6.696",
+    },
+  },
+  {
+    department: "CS",
+    classNumber: 2336,
+    professorName: "Nut Nguyen",
+    host: {
+      name: "Neece Kebabs",
+      email: "neece.kebabs@utdallas.edu",
+    },
+    currentCapacity: 3,
+    maxCapacity: 8,
+    startTime: "8:30pm",
+    endTime: "9:30pm",
+    location: {
+      building: "ECSN",
+      roomNum: "6.696",
+    },
+  },
+  {
+    department: "CS",
+    classNumber: 1337,
+    professorName: "Nisarg Desai",
+    host: {
+      name: "Neece Kebabs",
+      email: "neece.kebabs@utdallas.edu",
+    },
+    currentCapacity: 3,
+    maxCapacity: 8,
+    startTime: "8:30pm",
+    endTime: "9:30pm",
+    location: {
+      building: "ECSN",
+      roomNum: "6.696",
+    },
+  },
+  {
+    department: "CS",
+    classNumber: 1336,
+    professorName: "John Cole",
+    host: {
+      name: "Neece Kebabs",
+      email: "neece.kebabs@utdallas.edu",
+    },
+    currentCapacity: 0,
+    maxCapacity: 8,
+    startTime: "3:30pm",
+    endTime: "4:30pm",
+    location: {
+      building: "ECSW",
+      roomNum: "6.696",
+    },
+  },
+  {
+    department: "CS",
+    classNumber: 3305,
+    professorName: "Big Brain Wilson",
+    host: {
+      name: "Neece Kebabs",
+      email: "neece.kebabs@utdallas.edu",
+    },
+    currentCapacity: 7,
+    maxCapacity: 8,
+    startTime: "1:30pm",
+    endTime: "2:30pm",
+    location: {
+      building: "ECSS",
+      roomNum: "6.696",
+    },
+  },
+];

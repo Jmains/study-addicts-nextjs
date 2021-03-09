@@ -1,9 +1,6 @@
 import { useState, useEffect, useContext, createContext, ReactNode, useMemo } from "react";
-import { auth } from "../../config/firebase";
+import { auth, db } from "../../config/firebase";
 import firebase from "firebase/app";
-import { fetchWithGet, fetchWithPost } from "@utils/api-helpers";
-import useSWR from "swr";
-// import prisma from "@lib/prisma";
 
 const AuthContext = createContext<any | undefined>(undefined);
 type AuthProviderProps = { children: ReactNode };
@@ -12,77 +9,36 @@ const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
   const [user, setUser] = useState<any | null>(null);
 
   useEffect(() => {
-    const unsubscribe = auth.onIdTokenChanged(async (user) => {
-      if (user) {
-        try {
-          console.log("USER: ", user.uid);
-          const userFromDb = await fetchUser(user.uid);
-          console.log("USERFROMDB: ", userFromDb);
-
-          setUser({ firstName: userFromDb.firstName, lastName: userFromDb.lastName, ...user });
-        } catch (err) {
-          console.log(err);
-        }
-      } else {
-        setUser(null);
-      }
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      console.log("User from unsubscribe user useEffect: ", user);
+      setUser(user);
+      // if (user) {
+      //   getUserAdditionalData(user);
+      // }
     });
     return () => unsubscribe();
   }, []);
 
-  // force refresh the token every 10 minutes
-  // useEffect(() => {
-  //   const handle = setInterval(async () => {
-  //     const user = firebase.auth().currentUser;
-  //     if (user) await user.getIdToken(true);
-  //   }, 10 * 60 * 1000);
-
-  // clean up setInterval
-  //   return () => clearInterval(handle);
-  // }, []);
-
   // Update state while application is in use
-  // useEffect(() => {
-  //   if (user?.uid) {
-  //     // Subscribe to user document on mount
-  //     const unsubscribe = db
-  //       .collection("users")
-  //       .doc(user.uid)
-  //       .onSnapshot((doc) => setUser(doc.data()));
-  //     return () => unsubscribe();
-  //   }
-  // }, []);
-
-  const fetchUser = async (uid: string) => {
-    try {
-      return await fetchWithPost("/api/user", { uid });
-    } catch (err) {
-      throw {
-        ok: false,
-        message: "Failed to fetch user from DB!",
-        details: err,
-      };
+  useEffect(() => {
+    if (user?.uid) {
+      // Subscribe to user document on mount
+      const unsubscribe = db
+        .collection("users")
+        .doc(user.uid)
+        .onSnapshot((doc) => setUser(doc.data()));
+      return () => unsubscribe();
     }
-  };
+  }, []);
 
-  const createUser = async (
-    uid: string | undefined,
-    email: string,
-    firstName: string,
-    lastName: string
-  ) => {
+  const createUser = async (user: any) => {
     try {
-      const userData = await fetchWithPost("/api/register", {
-        uid,
-        email,
-        firstName,
-        lastName,
-      });
-      console.log("User succesfully added to db: ", userData);
+      await db.collection("users").doc(user.uid).set(user);
+      console.log("User succesfully added to db");
     } catch (err) {
       throw {
         ok: false,
-        message: "Failed to create user in Postgres",
+        message: "Failed to create user in FirestoreDB",
         details: err,
       };
     }
@@ -100,7 +56,7 @@ const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
         password
       );
       await auth.currentUser?.sendEmailVerification();
-      await createUser(userCredential?.user?.uid, email, firstName, lastName);
+      // await createUser({ uid: userCredential?.user?.uid, email, firstName, lastName });
     } catch (err) {
       console.log(err);
       throw {
@@ -129,26 +85,23 @@ const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
     }
   };
 
-  // const getUserAdditionalData = async (firebaseUser: firebase.User) => {
-  //   try {
-  //     // email! is very bad change this later sweeps
-  //     const user = await prisma.user.findUnique({
-  //       where: {
-  //         email: firebaseUser.email!
-  //       }
-  //     })
-
-  //     if (user) {
-  //       setUser(user);
-  //     }
-  //   } catch (err) {
-  //     throw {
-  //       ok: false,
-  //       message: "Failed to get additional user data",
-  //       details: err,
-  //     };
-  //   }
-  // };
+  const getUserAdditionalData = async (user: firebase.User) => {
+    try {
+      const userSnapshot: firebase.firestore.DocumentSnapshot = await db
+        .collection("users")
+        .doc(user.uid)
+        .get();
+      if (userSnapshot.data()) {
+        setUser(userSnapshot.data());
+      }
+    } catch (err) {
+      throw {
+        ok: false,
+        message: "Failed to get additional user data",
+        details: err,
+      };
+    }
+  };
 
   const logout = async () => {
     try {
@@ -182,7 +135,7 @@ const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
       logout,
       register,
       sendPasswordResetEmail,
-      // getUserAdditionalData,
+      getUserAdditionalData,
     }),
     [user]
   );

@@ -3,37 +3,16 @@ import { guestClient } from "../../utils/fauna-client";
 import { setAuthCookie } from "../../utils/auth-cookies";
 import { NextApiRequest, NextApiResponse } from "next";
 
-export default async function register(req: NextApiRequest, res: NextApiResponse) {
+export default async function login(req: NextApiRequest, res: NextApiResponse) {
   const { email, password } = req.body;
 
   if (!email || !password) {
     return res.status(400).send("Email and Password not provided");
   }
 
-  // Register User with urql client
   try {
-    const existingEmail = await guestClient.query(
-      // Exists returns boolean, Casefold returns normalize string
-      q.Exists(q.Match(q.Index("user_by_email"), q.Casefold(email)))
-    );
-
-    if (existingEmail) {
-      return res.status(400).send(`Email ${email} already exists`);
-    }
-
-    const user = await guestClient.query(
-      q.Create(q.Collection("User"), {
-        credentials: { password },
-        data: { email },
-      })
-    );
-
-    if (!user.ref) {
-      return res.status(404).send("user ref is missing");
-    }
-
     const auth = await guestClient.query(
-      q.Login(user.ref, {
+      q.Login(q.Match(q.Index("user_by_email"), q.Casefold(email)), {
         password,
       })
     );

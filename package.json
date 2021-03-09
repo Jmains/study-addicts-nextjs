@@ -1,25 +1,25 @@
 {
-  "name": "study-addicts",
+  "name": "saas-product-template",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "gen": "graphql-codegen --config codegen.yml"
   },
   "dependencies": {
-    "@prisma/client": "2.17.0",
     "@reach/portal": "^0.12.1",
     "@stripe/react-stripe-js": "^1.2.1",
     "@stripe/stripe-js": "^1.11.0",
-    "@types/nookies": "^2.0.3",
     "autoprefixer": "^10.2.0",
     "body-scroll-lock": "^3.1.5",
     "classnames": "^2.2.6",
     "cookie": "^0.4.1",
     "email-validator": "^2.0.4",
-    "fathom-client": "^3.0.0",
+    "faunadb": "^4.0.0",
     "firebase": "^8.2.9",
+    "graphql": "^15.4.0",
     "lodash.debounce": "^4.0.8",
     "lodash.throttle": "^4.1.1",
     "micro": "^9.3.4",
@@ -30,11 +30,16 @@
     "react-dom": "17.0.1",
     "react-hook-form": "^6.14.0",
     "stripe": "^8.132.0",
-    "swr": "^0.4.2",
     "tailwindcss": "^2.0.2",
+    "urql": "^1.11.4",
     "ws": "^7.4.1"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "1.19.4",
+    "@graphql-codegen/introspection": "^1.18.1",
+    "@graphql-codegen/typescript": "1.19.0",
+    "@graphql-codegen/typescript-operations": "1.17.12",
+    "@graphql-codegen/typescript-urql": "^2.0.3",
     "@types/body-scroll-lock": "^2.6.1",
     "@types/classnames": "^2.2.11",
     "@types/lodash.throttle": "^4.1.6",
@@ -42,7 +47,6 @@
     "@types/micro-cors": "^0.1.1",
     "@types/node": "^14.14.10",
     "@types/react": "^17.0.0",
-    "prisma": "2.17.0",
     "typescript": "^4.1.2"
   }
 }

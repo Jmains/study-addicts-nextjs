@@ -1,27 +1,18 @@
-Okay Neece Kebabs, this is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Built Using
+## Getting Started
 
-- [Next.js](https://nextjs.org/)
-- [Vercel](https://vercel.com)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [PostgreSQL](https://www.postgresql.org/)
-
-## To Run This On Neeces Laptop Simply Do
+First, run the development server:
 
 ```bash
-$ git clone https://github.com/Jmains/study-addicts-nextjs.git
-$ cd study-addicts-nextjs
-$ yarn
-$ yarn dev
+npm run dev
+# or
+yarn dev
 ```
 
-Create a `.env.local` AND a `.env` file similar to [`.env.example`](https://github.com/Jmains/study-addicts-nextjs/blob/main/.env.example).
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## Getting our Database URI
-
-So neece kebabs what you have to do is go to [Heroku](https://www.heroku.com/), log in with the studyaddictsdev@gmail account, then click on `study-addicts-app`. Next click on `resources`, then `Heroku Postgres`. After that, click on `Settings` and
-the URI should be right there.
+You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
 
 ## Learn More
 
@@ -39,3 +30,19 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
 # study-addicts-nextjs
+
+# Env file example
+
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=<replace-with-your-publishable-key>
+STRIPE_SECRET_KEY=<replace-with-your-secret-key>
+
+### Firebase config
+
+NEXT_PUBLIC_FIREBASE_API_KEY=
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
+NEXT_PUBLIC_FIREBASE_DATABASE_URL=
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
+NEXT_PUBLIC_FIREBASE_APP_ID=
+NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=

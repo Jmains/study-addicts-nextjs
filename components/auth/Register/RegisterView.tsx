@@ -4,6 +4,7 @@ import { FC, useState } from "react";
 import { OpenEye, ClosedEye, LoadingSpinner } from "@components/icons";
 import Image from "next/image";
 import { useUIDispatch } from "@components/ui/context";
+import { auth, db } from "config/firebase";
 import { useAuth } from "@utils/hooks/useAuth";
 
 interface Props {}
@@ -29,7 +30,6 @@ const RegisterView: FC<Props> = () => {
     setLoading(true);
     try {
       const user = await auth.register(firstName, lastName, email, password);
-      console.log("user: ", user);
       uiDispatch({ type: "SET_TOAST_TEXT", text: "Account registered! Please sign in..." });
       uiDispatch({ type: "OPEN_TOAST" });
       uiDispatch({ type: "SET_MODAL_VIEW", view: "LOGIN_VIEW" });

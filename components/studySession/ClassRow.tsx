@@ -1,24 +1,26 @@
 import { FC } from "react";
 
-export type StudySessionProps = {
-  department: string;
-  classNumber: number;
-  professorName: string;
-  host: {
-    name: string;
-    email: string;
+interface Props {
+  studySesh: {
+    department: string;
+    classNumber: number;
+    professorName: string;
+    host: {
+      name: string;
+      email: string;
+    };
+    currentCapacity: number;
+    maxCapacity: number;
+    startTime: string;
+    endTime: string;
+    location: {
+      building: string;
+      roomNum: string;
+    };
   };
-  currentCapacity: number;
-  maxCapacity: number;
-  startTime: string;
-  endTime: string;
-  location: {
-    building: string;
-    roomNum: string;
-  };
-};
+}
 
-const ClassRow: FC<{ studySesh: StudySessionProps }> = ({ studySesh }) => {
+const ClassRow: FC<Props> = ({ studySesh }) => {
   return (
     <tr>
       <td className="px-6 py-4 whitespace-nowrap">

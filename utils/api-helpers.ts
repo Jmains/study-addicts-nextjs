@@ -1,7 +1,7 @@
-export async function fetchWithPost(url: string, data?: {}) {
+export async function fetchPostJSON(url: string, data?: {}) {
   try {
     // Default options are marked with *
-    const res = await fetch(url, {
+    const response = await fetch(url, {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
       cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -14,48 +14,16 @@ export async function fetchWithPost(url: string, data?: {}) {
       referrerPolicy: "no-referrer", // no-referrer, *client
       body: JSON.stringify(data || {}), // body data type must match "Content-Type" header
     });
-    return await res.json(); // parses JSON response into native JavaScript objects
+    return await response.json(); // parses JSON response into native JavaScript objects
   } catch (err) {
     throw new Error(err.message);
   }
 }
 
-export async function fetchWithPut(url: string, data?: {}) {
+export async function fetchGetJSON(url: string) {
   try {
-    const res = await fetch(url, {
-      method: "PUT",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data || {}),
-    });
-    return await res.json();
-  } catch (err) {
-    throw new Error(err.message);
-  }
-}
-
-export async function fetchWithDelete(url: string, data?: {}) {
-  try {
-    const res = await fetch(url, {
-      method: "DELETE",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data || {}),
-    });
-    return await res.json();
-  } catch (err) {
-    throw new Error(err.message);
-  }
-}
-
-export async function fetchWithGet(url: string) {
-  try {
-    const res = await fetch(url);
-    return await res.json();
+    const data = await fetch(url).then((res) => res.json());
+    return data;
   } catch (err) {
     throw new Error(err.message);
   }
