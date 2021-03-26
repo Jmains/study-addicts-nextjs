@@ -17,7 +17,7 @@ export async function fetchWithPost(url: string, data?: {}) {
 
     return res.json(); // parses JSON response into native JavaScript objects
   } catch (err) {
-    throw new Error(err.message);
+    throw new Error(err);
   }
 }
 
@@ -34,7 +34,7 @@ export async function fetchWithPut(url: string, data?: {}) {
     });
     return res.json();
   } catch (err) {
-    throw new Error(err.message);
+    throw new Error(err);
   }
 }
 
@@ -52,7 +52,7 @@ export async function fetchWithDelete(url: string, token: string, data?: {}) {
     });
     return res.json();
   } catch (err) {
-    throw new Error(err.message);
+    throw new Error(err);
   }
 }
 
@@ -67,7 +67,7 @@ export async function fetcher(url: string) {
     });
     return res.json();
   } catch (err) {
-    throw new Error(err.message);
+    throw new Error(err);
   }
 }
 
@@ -83,6 +83,6 @@ export async function restrictedFetcher(url: string, token: string) {
     });
     return res.json();
   } catch (err) {
-    throw new Error(err.message);
+    throw new Error(err);
   }
 }

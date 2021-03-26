@@ -29,6 +29,11 @@ const studySessionApi = async (req: NextApiRequest, res: NextApiResponse) => {
       const body = { ...req.body };
       return await removeStudySession(req, res, body);
     }
+
+    return res.status(500).json({
+      ok: false,
+      message: "Something went wrong",
+    });
   } catch (error) {
     console.error(error);
     const message = "An unexpected error occured";

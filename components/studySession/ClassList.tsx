@@ -3,16 +3,24 @@ import { GetServerSideProps, GetServerSidePropsContext, GetStaticProps } from "n
 import ClassRow, { StudySessionProps } from "./ClassRow";
 import useSWR from "swr";
 import { fetcher } from "@utils/apiHelpers";
+import { useQuery } from "react-query";
 
 interface Props {
   studySessions?: StudySessionProps[];
 }
 
 const ClassList: FC<Props> = () => {
-  const { data, error } = useSWR("/api/study-sessions", fetcher);
-  let studySessions;
-  if (data) {
-    studySessions = data;
+  // const { data, error } = useSWR("/api/study-sessions", fetcher);
+  const { isLoading, isError, data: studySessions, error } = useQuery("studySessions", () => {
+    return fetcher("/api/study-sessions");
+  });
+
+  if (isLoading) {
+    return <span>Loading...</span>;
+  }
+
+  if (isError) {
+    return <span>Error: {error}</span>;
   }
 
   return (
@@ -72,109 +80,109 @@ const ClassList: FC<Props> = () => {
   );
 };
 
-export const getStaticProps: GetStaticProps = async () => {
-  const studySessions = await global.prisma.studySession.findMany({
-    where: { currentCapacity: 0 },
-  });
-  console.log(studySessions);
-  // const studySessionz = [
-  //   {
-  //     department: "CS",
-  //     classNumber: 4305,
-  //     professorName: "Gopal Goopers",
-  //     host: {
-  //       name: "Neece Kebabs",
-  //       email: "neece.kebabs@utdallas.edu",
-  //     },
-  //     currentCapacity: 6,
-  //     maxCapacity: 10,
-  //     startTime: "11:30am",
-  //     endTime: "12:30pm",
-  //     location: {
-  //       building: "ECSS",
-  //       roomNum: "6.696",
-  //     },
-  //   },
-  //   {
-  //     department: "CS",
-  //     classNumber: 2336,
-  //     professorName: "Nut Nguyen",
-  //     host: {
-  //       name: "Neece Kebabs",
-  //       email: "neece.kebabs@utdallas.edu",
-  //     },
-  //     currentCapacity: 3,
-  //     maxCapacity: 8,
-  //     startTime: "8:30pm",
-  //     endTime: "9:30pm",
-  //     location: {
-  //       building: "ECSN",
-  //       roomNum: "6.696",
-  //     },
-  //   },
-  //   {
-  //     department: "CS",
-  //     classNumber: 1337,
-  //     professorName: "Nisarg Desai",
-  //     host: {
-  //       name: "Neece Kebabs",
-  //       email: "neece.kebabs@utdallas.edu",
-  //     },
-  //     currentCapacity: 3,
-  //     maxCapacity: 8,
-  //     startTime: "8:30pm",
-  //     endTime: "9:30pm",
-  //     location: {
-  //       building: "ECSN",
-  //       roomNum: "6.696",
-  //     },
-  //   },
-  //   {
-  //     department: "CS",
-  //     classNumber: 1336,
-  //     professorName: "John Cole",
-  //     host: {
-  //       name: "Neece Kebabs",
-  //       email: "neece.kebabs@utdallas.edu",
-  //     },
-  //     currentCapacity: 0,
-  //     maxCapacity: 8,
-  //     startTime: "3:30pm",
-  //     endTime: "4:30pm",
-  //     location: {
-  //       building: "ECSW",
-  //       roomNum: "6.696",
-  //     },
-  //   },
-  //   {
-  //     department: "CS",
-  //     classNumber: 3305,
-  //     professorName: "Big Brain Wilson",
-  //     host: {
-  //       name: "Neece Kebabs",
-  //       email: "neece.kebabs@utdallas.edu",
-  //     },
-  //     currentCapacity: 7,
-  //     maxCapacity: 8,
-  //     startTime: "1:30pm",
-  //     endTime: "2:30pm",
-  //     location: {
-  //       building: "ECSS",
-  //       roomNum: "6.696",
-  //     },
-  //   },
-  // ];
+// export const getStaticProps: GetStaticProps = async () => {
+//   const studySessions = await global.prisma.studySession.findMany({
+//     where: { currentCapacity: 0 },
+//   });
+// console.log(studySessions);
+// const studySessionz = [
+//   {
+//     department: "CS",
+//     classNumber: 4305,
+//     professorName: "Gopal Goopers",
+//     host: {
+//       name: "Neece Kebabs",
+//       email: "neece.kebabs@utdallas.edu",
+//     },
+//     currentCapacity: 6,
+//     maxCapacity: 10,
+//     startTime: "11:30am",
+//     endTime: "12:30pm",
+//     location: {
+//       building: "ECSS",
+//       roomNum: "6.696",
+//     },
+//   },
+//   {
+//     department: "CS",
+//     classNumber: 2336,
+//     professorName: "Nut Nguyen",
+//     host: {
+//       name: "Neece Kebabs",
+//       email: "neece.kebabs@utdallas.edu",
+//     },
+//     currentCapacity: 3,
+//     maxCapacity: 8,
+//     startTime: "8:30pm",
+//     endTime: "9:30pm",
+//     location: {
+//       building: "ECSN",
+//       roomNum: "6.696",
+//     },
+//   },
+//   {
+//     department: "CS",
+//     classNumber: 1337,
+//     professorName: "Nisarg Desai",
+//     host: {
+//       name: "Neece Kebabs",
+//       email: "neece.kebabs@utdallas.edu",
+//     },
+//     currentCapacity: 3,
+//     maxCapacity: 8,
+//     startTime: "8:30pm",
+//     endTime: "9:30pm",
+//     location: {
+//       building: "ECSN",
+//       roomNum: "6.696",
+//     },
+//   },
+//   {
+//     department: "CS",
+//     classNumber: 1336,
+//     professorName: "John Cole",
+//     host: {
+//       name: "Neece Kebabs",
+//       email: "neece.kebabs@utdallas.edu",
+//     },
+//     currentCapacity: 0,
+//     maxCapacity: 8,
+//     startTime: "3:30pm",
+//     endTime: "4:30pm",
+//     location: {
+//       building: "ECSW",
+//       roomNum: "6.696",
+//     },
+//   },
+//   {
+//     department: "CS",
+//     classNumber: 3305,
+//     professorName: "Big Brain Wilson",
+//     host: {
+//       name: "Neece Kebabs",
+//       email: "neece.kebabs@utdallas.edu",
+//     },
+//     currentCapacity: 7,
+//     maxCapacity: 8,
+//     startTime: "1:30pm",
+//     endTime: "2:30pm",
+//     location: {
+//       building: "ECSS",
+//       roomNum: "6.696",
+//     },
+//   },
+// ];
 
-  // const { data, error } = useSWR("/api/study-session", fetchWithGet);
-  // if (data) {
-  //   console.log("DATA: ", data);
-  // } else {
-  //   console.log("DATA: NO DATA");
-  // }
+// const { data, error } = useSWR("/api/study-session", fetchWithGet);
+// if (data) {
+//   console.log("DATA: ", data);
+// } else {
+//   console.log("DATA: NO DATA");
+// }
 
-  console.log("Hello from server");
+//   console.log("Hello from server");
 
-  return { props: { studySessions } };
-};
+//   return { props: { studySessions } };
+// };
 
 export default ClassList;

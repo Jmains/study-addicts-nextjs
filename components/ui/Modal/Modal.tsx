@@ -58,7 +58,7 @@ const Modal: FC<Props> = ({ children, open, onClose, onEnter = null }) => {
             >
               <Cross className="h-6 w-6 fill-current text-black hover:text-lime-600" />
             </button>
-            {children}
+            <div className="mt-6">{children}</div>
           </div>
         </div>
       ) : null}

@@ -8,6 +8,7 @@ import { modalViews } from "@components/ui/context";
 import PageHeader from "./PageHeader";
 import Footer from "./Footer";
 import FeatureBar from "./FeatureBar";
+import AddSessionView from "@components/studySession/AddSessionView";
 
 const Layout: FC = ({ children }) => {
   const uiDispatch = useUIDispatch();
@@ -36,6 +37,7 @@ const Layout: FC = ({ children }) => {
         {modalView === modalViews.LOGIN_VIEW && <LoginView />}
         {modalView === modalViews.REGISTER_VIEW && <RegisterView />}
         {modalView === modalViews.FORGOT_PASS_VIEW && <ForgotPassView />}
+        {modalView === modalViews.CREATE_STUDY_GROUP_VIEW && <AddSessionView />}
         {/* {modalView === modalViews.CREATE_STUDY_GROUP_VIEW && <CreateStudyGroupView} */}
       </Modal>
 

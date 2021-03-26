@@ -1,5 +1,3 @@
-import Head from "next/head";
-import Link from "next/link";
 import { ClassList } from "@components/studySession/";
 import { Footer, Navbar } from "@components/common";
 import { PageHeader } from "@components/common";
@@ -23,6 +21,7 @@ export default function Home() {
           <div className="flex justify-end items-center">
             <button
               onClick={() => {
+                uiDispatch({ type: "SET_MODAL_VIEW", view: "CREATE_STUDY_GROUP_VIEW" });
                 uiDispatch({ type: "OPEN_MODAL" });
               }}
               className="px-2 py-1 bg-lime-600 hover:bg-lime-700 shadow-md text-white rounded-md font-semibold text-sm"
